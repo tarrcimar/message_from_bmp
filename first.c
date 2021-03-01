@@ -3,7 +3,7 @@
 #include <string.h>
 
 #define VERSION "Version: 0.0 \nDate: 2021.02.13 \nAuthor: Tarr Marton"
-#define HELP "What you can do"
+#define HELP "I'm here to help"
 
 FILE *open_file(char* filename, char* mode)
 {
