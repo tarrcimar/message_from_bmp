@@ -6,12 +6,14 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#include <wchar.h>
+#include <locale.h>
 
 
 /*struct pixel{
-    unsigned char blue;
-    unsigned char green;
-    unsigned char red;
+    char blue;
+    char green;
+    char red;
 };
 
 struct pixel *TestArray(int *NumCh){
@@ -58,19 +60,20 @@ char* Unwrap(char *Pbuff, int NumCh){
     int mask = 0b00000111;
     char character;
     int j = 0;
-
+    
     //Decode the rgb elements from the array
     for (int i = 0; i < NumCh * 3; i+=3)
     {
         character = ((Pbuff[i] & mask)<<6) | ((Pbuff[i+1] & mask)<<3) | ((Pbuff[i + 2] & mask));
-        character &= ~(1UL << 7);
+        strncat(letters, &character, 1);
         letters[j] = character;
         j++;
     }
 
     //terminate the string
     letters[NumCh - 1] = '\0';
-
+    printf("%c", letters[8]);
+    printf("%c",letters[9]);
     return letters;
 }
 
@@ -78,14 +81,14 @@ char* ReadPixels(char* f, int* numCh)
 {
     int i;
     FILE* file = fopen(f, "rb");
-    unsigned char info[54];
+    char info[54];
 
     // read the 54-byte header
-    fread(info, sizeof(unsigned char), 54, file); 
+    fread(info, sizeof(char), 54, file); 
 
     int fd;
     fd = open(f, O_RDWR);
-    read(fd, info, 54*sizeof(unsigned char));
+    read(fd, info, 54*sizeof(char));
 
     // extract image height and width from header
     int width = *(int*)&info[18];
@@ -100,25 +103,28 @@ char* ReadPixels(char* f, int* numCh)
 
     char* data = malloc(size * sizeof(char));
     
+    //Check for Failure
+    if(data == NULL){
+        fprintf(stderr, "Memory could not be allocated! Program will exit..");
+        exit(1);
+    }
+
     read(fd, data, size * sizeof(char));
-    
+
     return data;
 }
 
 
 
 int main(){
-
-
     int num = 0;
 
     //Create Test Array, and decode it
-    ////struct pixel *array = TestArray(&num);
-    
 
     char* pixel_array = ReadPixels("cpu02.bmp", &num);
-    char *hidden_text = Unwrap(pixel_array, num);
+    char* hidden_text = Unwrap(pixel_array, num);
     printf("%s", hidden_text);
+
 
     free(pixel_array);
 
