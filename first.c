@@ -251,9 +251,12 @@ int main(int argc, char* argv[]){
         }
         char* pixel_array = ReadPixels(file, &num);
     	char* hidden_text = Unwrap(pixel_array, num);
+        printf("%s\n",hidden_text);
+        /*
 		response = Post("G8R7ZQ", hidden_text, num);
 		if(response == 0) printf("Post successful! Text sent.\n");
 		else if(response != 0) fprintf(stderr, "Text could not be posted!\n");
+        */
 		free(pixel_array);
 		free(hidden_text);
     }
