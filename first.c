@@ -16,6 +16,8 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <netdb.h>
+#include <signal.h>
+#include <sys/wait.h>
 
 #include "colors.h"
 
@@ -63,6 +65,8 @@ char* Unwrap(char *Pbuff, int NumCh){
 char* ReadPixels(int fd, int* numCh)
 {
     char info[54];
+
+    //sleep(2); testing catching interrupt signal
     
     read(fd, info, 54*sizeof(char));
 
@@ -219,12 +223,31 @@ int Post(char* neptunID, char* message, int NumCh){
 }
 
 
+void WhatToDo(int sign){
+	pid_t pid;
+
+
+	if(sign == SIGALRM){
+		fprintf(stderr, "Execution timed out!\n");
+        exit(5);
+	}
+	else if(sign == SIGINT){
+		pid = fork();
+		if(pid == 0){
+			fprintf(stdout, "Execution cannot be stopped by 'Ctrl+C'!\n");
+			kill(getpid(), SIGKILL);
+		}
+	}
+}
+
 int main(int argc, char* argv[]){
     char c;
     int file = 0;
     char* extension;
     int num = 0;
     int response;
+
+    signal(SIGALRM, WhatToDo); // attach funtction to alarm signal
     
     if(argc == 2){
     	extension = strrchr(argv[1], '.');
@@ -236,8 +259,11 @@ int main(int argc, char* argv[]){
         	fprintf(stderr, "File could not be opened. The program will now exit.\n");
         	exit(1);
         }
+        signal(SIGINT, WhatToDo); //attach function to interrupt signal
+        alarm(1);
         char* pixel_array = ReadPixels(file, &num);
     	char* hidden_text = Unwrap(pixel_array, num);
+    	alarm(0);
 		printf("%s\n",hidden_text);
 		free(pixel_array);
 		free(hidden_text);
@@ -256,8 +282,11 @@ int main(int argc, char* argv[]){
         	fprintf(stderr, "File could not be opened. The program will now exit.\n");
         	exit(1);
         }
+        signal(SIGINT, WhatToDo);
+        alarm(1);
         char* pixel_array = ReadPixels(file, &num);
     	char* hidden_text = Unwrap(pixel_array, num);
+    	alarm(0);
         printf("%s\n",hidden_text);
         /*
 		response = Post("G8R7ZQ", hidden_text, num);
@@ -267,6 +296,8 @@ int main(int argc, char* argv[]){
 		free(pixel_array);
 		free(hidden_text);
     }
+
+    alarm(0);
 
     return EXIT_SUCCESS;
 }
