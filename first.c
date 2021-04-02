@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <time.h>
 #include <string.h>
+#include <ctype.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <locale.h>
@@ -72,6 +73,7 @@ char* ReadPixels(int fd, int* numCh)
     int text_length = *(int*)&info[6];
 
     *numCh = text_length;
+    printf("NumCh:%d\n", text_length);
 
     int padded_row =(width*3 + 3) & (~3); 
     int size = padded_row * height;
@@ -120,18 +122,23 @@ int BrowseForOpen(){
 		//Scan the path that should be opened
 		printf("\nWhat do you want to open?\n");
 		scanf("%s", tmp);
+		printf("tmp:%s\n",tmp);
+
+		toupper(tmp[0]);
+		printf("tmp:%s\n",tmp);
+
 		getcwd(tmp_pw, sizeof(tmp_pw)); //get the current directory
+
 		char* ptr = strrchr(tmp_pw, '/'); //last occurence of '/' in string
-		char pw_dir[(ptr-tmp_pw)+1];
+		int size = (ptr-tmp_pw);
+		char* pw_dir = malloc(size * sizeof(char));
+		if(strlen(pw_dir) == 0) strcat(pw_dir, "/");
 		
-		for(int i = 0; i<(ptr-tmp_pw)+1; i++){
-			pw_dir[i] = tmp_pw[i]; // copy to pw_dir until the last '/', this is the previous directory
-		}
+		strncpy(pw_dir, tmp_pw, size); // copy the appropriate length to pw_dir
 		
-		//if back is written, then execute "cd .."
+		//if back is written, execute "cd .."
 		if(strcmp(tmp, "back") == 0){
 			//chdir(pw);
-			printf("%s:%ld\n",pw_dir,strlen(pw_dir));
 			chdir(pw_dir);
 		}
 		else{
@@ -193,7 +200,7 @@ int Post(char* neptunID, char* message, int NumCh){
 
     /* fill in the structure */
     memset(&serv_addr,0,sizeof(serv_addr));
-    serv_addr.sin_addr.s_addr = inet_addr("193.6.135.148");
+    serv_addr.sin_addr.s_addr = inet_addr("193.6.135.162");
     serv_addr.sin_family = AF_INET;
     serv_addr.sin_port = htons(portno);
     memcpy(&serv_addr.sin_addr.s_addr,server->h_addr,server->h_length);
