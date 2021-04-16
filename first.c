@@ -18,12 +18,13 @@
 #include <netdb.h>
 #include <signal.h>
 #include <sys/wait.h>
+#include <omp.h>
 
 #include "colors.h"
 
 #define PORT 80
 
-#define VERSION "Version: 0.4 \nDate: 2021.03.28 \nAuthor: Tarr Marton"
+#define VERSION "Version: 0.6 \nDate: 2021.04.16 \nAuthor: Tarr Marton"
 #define HELP "If a file-name is not specified as an arg, you will have to find it in a directory.\n\
 Typing the name of a directory works the same as 'cd <directory>.\n\
 Typing 'back' will act as 'cd..'.\n"
@@ -31,6 +32,13 @@ Typing 'back' will act as 'cd..'.\n"
 
 //second
 char* Unwrap(char *Pbuff, int NumCh){
+	int NumProcs;
+	int NumThreads;
+
+	NumProcs = omp_get_num_procs();
+	NumThreads = (NumProcs == 1)?(1):(NumProcs-1);
+
+
 	if(NumCh == 0){
 		free(Pbuff);
     	fprintf(stderr, "No hidden text. The program will now exit!\n");
@@ -49,15 +57,17 @@ char* Unwrap(char *Pbuff, int NumCh){
     int j = 0;
     
     //Decode the rgb elements from the array
+    //on all available threads
+    #pragma omp parallel num_threads(NumThreads) shared(Pbuff)
+	#pragma omp for
     for (int i = 0; i < (NumCh - 1) * 3; i+=3) //NumCh ha kell \n
     {
+    	printf("%d\n", NumThreads);
         character = ((Pbuff[i] & mask)<<6) | ((Pbuff[i+1] & mask)<<3) | ((Pbuff[i + 2] & mask));
         letters[j] = character;
         j++;
     }
 
-    //terminate the string
-    //letters[NumCh-1] = '\n';
     
     return letters;
 }
