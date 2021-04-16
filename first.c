@@ -55,18 +55,20 @@ char* Unwrap(char *Pbuff, int NumCh){
     int mask = 0b00000111;
     int character;
     int j = 0;
+
     
     //Decode the rgb elements from the array
     //on all available threads
-    #pragma omp parallel num_threads(NumThreads) shared(Pbuff)
-	#pragma omp for
-    for (int i = 0; i < (NumCh - 1) * 3; i+=3) //NumCh ha kell \n
-    {
-    	printf("%d\n", NumThreads);
-        character = ((Pbuff[i] & mask)<<6) | ((Pbuff[i+1] & mask)<<3) | ((Pbuff[i + 2] & mask));
-        letters[j] = character;
-        j++;
-    }
+    #pragma omp parallel for
+		for (int i = 0; i < (NumCh - 1) * 3; i+=3) 
+		{
+			NumThreads = omp_get_thread_num();
+	        printf("%d\n", NumThreads);
+		   	
+			character = ((Pbuff[i] & mask)<<6) | ((Pbuff[i+1] & mask)<<3) | ((Pbuff[i + 2] & mask));
+			letters[j] = character;
+			j++;
+		}
 
     
     return letters;
@@ -257,7 +259,8 @@ int main(int argc, char* argv[]){
     int num = 0;
     int response;
 
-    signal(SIGALRM, WhatToDo); // attach funtction to alarm signal
+
+    signal(SIGALRM, WhatToDo); // attach function to alarm signal
     
     if(argc == 2){
     	extension = strrchr(argv[1], '.');
@@ -298,11 +301,9 @@ int main(int argc, char* argv[]){
     	char* hidden_text = Unwrap(pixel_array, num);
     	alarm(0);
         printf("%s\n",hidden_text);
-        /*
 		response = Post("G8R7ZQ", hidden_text, num);
 		if(response == 0) printf("Post successful! Text sent.\n");
 		else if(response != 0) fprintf(stderr, "Text could not be posted!\n");
-        */
 		free(pixel_array);
 		free(hidden_text);
     }
