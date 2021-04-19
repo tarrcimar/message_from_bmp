@@ -27,41 +27,54 @@ int main(int argc, char* argv[]){
         	exit(1);
         }
         signal(SIGINT, WhatToDo); //attach function to interrupt signal
-        alarm(1);
+        alarm(1);//1 second to execute
         char* pixel_array = ReadPixels(file, &num);
     	char* hidden_text = Unwrap(pixel_array, num);
     	alarm(0);
 		printf("%s\n",hidden_text);
+
 		free(pixel_array);
 		free(hidden_text);
     }
     else if(argc == 2 && strcmp(argv[1],"--version") == 0){
         printf("%s\n", VERSION);
-        exit(1);
+        exit(2);
     }
     else if(argc == 2 && strcmp(argv[1], "--help") == 0){
         printf("%s\n", HELP);
-        exit(1);
+        exit(2);
     }
-    else if(argc == 2 && strcmp(extension + 1, "bmp") == 0){
+    else if(argc == 2 && strcmp(extension + 1, "bmp") == 0){ //if the extension is bmp
         file = open(argv[1], O_RDONLY);
         if(file == 0){
         	fprintf(stderr, "File could not be opened. The program will now exit.\n");
         	exit(1);
         }
+
         signal(SIGINT, WhatToDo);
         alarm(1);
         char* pixel_array = ReadPixels(file, &num);
     	char* hidden_text = Unwrap(pixel_array, num);
     	alarm(0);
         printf("%s\n",hidden_text);
-        /*
+
 		response = Post("G8R7ZQ", hidden_text, num);
-		if(response == 0) printf("Post successful! Text sent.\n");
-		else if(response != 0) fprintf(stderr, "Text could not be posted!\n");
-		*/
-		free(pixel_array);
-		free(hidden_text);
+		if(response == 0){
+			printf("Post successful! Text sent.\n");
+			free(pixel_array);
+			free(hidden_text);
+			exit(0);
+		}
+		else if(response != 0){
+			fprintf(stderr, "Text could not be posted!\n");
+			free(pixel_array);
+			free(hidden_text);
+			exit(6);
+		}
+    }
+    else if(argc == 2 && strcmp(extension + 1, "bmp") != 0){
+    	fprintf(stderr, "Wrong file format!");
+    	exit(9);
     }
 
     alarm(0);
