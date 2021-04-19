@@ -20,7 +20,7 @@
 
 #define PORT 80
 
-#define VERSION "Version: 0.6 \nDate: 2021.04.16 \nAuthor: Tarr Marton"
+#define VERSION "Version: 1.0 \nDate: 2021.04.19 \nAuthor: Tarr Marton"
 #define HELP "If a file-name is not specified as an arg, you will have to find it in a directory using a command line interface.\n\
 Typing the name of a directory works the same as 'cd <directory>.\n\
 Typing 'back' will act as 'cd..'.\n"
