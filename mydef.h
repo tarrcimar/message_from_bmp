@@ -34,7 +34,7 @@ char* Unwrap(char *Pbuff, int NumCh){
     	exit(3);
     }
 
-    char *letters = malloc((NumCh + 1) * sizeof(char));
+    char *letters = malloc(NumCh * sizeof(char));
     char *finalletters = malloc(NumCh * sizeof(char));
 
     //Check for Failure
