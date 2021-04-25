@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("wha",["Function"],[["WhatToDo",,[[,,,,0,"File:mydef.h:WhatToDo"]]]]);

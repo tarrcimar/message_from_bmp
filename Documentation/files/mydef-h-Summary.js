@@ -1,1 +1,0 @@
-﻿NDFramePage.OnPageTitleLoaded("File:mydef.h","mydef.h");NDSummary.OnSummaryLoaded("File:mydef.h",[["C/C++","C"]],[["Functions","Function"],["Groups","Group"]],[[3,0,1,"Functions","Functions"],[4,0,0,"Unwrap","Unwrap"],[5,0,0,"ReadPixels","ReadPixels"],[6,0,0,"BrowseForOpen","BrowseForOpen"],[7,0,0,"Post","Post"],[8,0,0,"WhatToDo","WhatToDo"]]);

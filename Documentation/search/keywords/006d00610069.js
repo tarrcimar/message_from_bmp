@@ -1,1 +1,0 @@
-﻿NDSearch.OnPrefixDataLoaded("mai",["Function"],[["main",,[[,,,,0,"File:second.c:main"]]]]);
