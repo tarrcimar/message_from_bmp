@@ -20,10 +20,11 @@
 
 #define PORT 80
 
-#define VERSION "Version: 1.0 \nDate: 2021.04.19 \nAuthor: Tarr Marton"
+#define VERSION "Version: 1.0 \nDate: 2021.04.26 \nAuthor: Tarr Marton"
 #define HELP "If a file-name is not specified as an arg, you will have to find it in a directory using a command line interface.\n\
 Typing the name of a directory works the same as 'cd <directory>.\n\
-Typing 'back' will act as 'cd..'.\n"
+Typing 'back' will act as 'cd..'\n\
+For more info, check the documentation.\n"
 
 
 char* Unwrap(char *Pbuff, int NumCh){
@@ -51,6 +52,7 @@ char* Unwrap(char *Pbuff, int NumCh){
     
     //Decode the rgb elements from the array
     //on all available threads
+    
     #pragma omp parallel for shared(Pbuff) private(i)
 		for (i = 0; i < (NumCh * 3);i+=3) 
 		{
@@ -60,11 +62,12 @@ char* Unwrap(char *Pbuff, int NumCh){
 
 
 	//Double check the length
-
+	
 	for(int i = 0; i < NumCh; i++){
 		finalletters[i] = letters[i];
 	}
 
+	free(letters);
 	
     
     return finalletters;
@@ -74,7 +77,7 @@ char* ReadPixels(int fd, int* numCh)
 {
     char info[54]; //length of header(14) + InfoHeader(40) in bytes
 
-    //sleep(2); //testing catching interrupt signal
+    sleep(2); //testing catching interrupt signal
     
     read(fd, info, 54*sizeof(char));
 
@@ -98,7 +101,7 @@ char* ReadPixels(int fd, int* numCh)
     }
 
     read(fd, data, size * sizeof(char)); //read all of the pixel array
-    
+
     return data;
 }
 
@@ -140,22 +143,25 @@ int BrowseForOpen(){
 
 		char* ptr = strrchr(tmp_pw, '/'); //last occurence of '/' in string
 		int size = (ptr-tmp_pw);
+
 		char* pw_dir = malloc(size * sizeof(char));
-		if(strlen(pw_dir) == 0) strcat(pw_dir, "/");
 		
 		strncpy(pw_dir, tmp_pw, size); // copy the appropriate length to pw_dir
 		
 		//if back is written, execute "cd .."
 		if(strcmp(tmp, "back") == 0){
 			chdir(pw_dir);
+			free(pw_dir);
 		}
 		else{
+			free(pw_dir);
 			while(chdir(tmp) != 0){
 				stat(tmp, &path_stat);
 				//If not a directory, check if it's a regular file, if yes then open and return
     			if(S_ISREG(path_stat.st_mode) == 1){
     				if(strcmp(extension + 1, "bmp") == 0){
     					regularfile = open(tmp, O_RDONLY);
+    					closedir(dir);
 						return regularfile;	
     				}
     				else{
@@ -200,7 +206,7 @@ int Post(char* neptunID, char* message, int NumCh){
 
 
     int sock;
-    char message_to_send[4096],response[4096], time[1024];
+    char message_to_send[4096], response[4096], time[100];
 
 	
     //Create the timestamp

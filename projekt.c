@@ -27,23 +27,25 @@ int main(int argc, char* argv[]){
         }
         signal(SIGALRM, WhatToDo); // attach function to alarm signal
         signal(SIGINT, WhatToDo); //attach function to interrupt signal
-        alarm(1);//1 second to execute
+        alarm(20);//1 second to execute
         char* pixel_array = ReadPixels(file, &num);
     	char* hidden_text = Unwrap(pixel_array, num);
     	alarm(0);
-		printf("%s\n",hidden_text);
+		printf("%s",hidden_text);
 
 		response = Post("G8R7ZQ", hidden_text, num);
+
+
+		free(hidden_text);
+		free(pixel_array);
+
+
 		if(response == 0){
 			printf("Post successful! Text sent.\n");
-			free(pixel_array);
-			free(hidden_text);
 			exit(0);
 		}
 		else if(response != 0){
 			fprintf(stderr, "Text could not be posted!\n");
-			free(pixel_array);
-			free(hidden_text);
 			exit(6);
 		}
 
@@ -66,23 +68,24 @@ int main(int argc, char* argv[]){
 
 		signal(SIGALRM, WhatToDo); // attach function to alarm signal
         signal(SIGINT, WhatToDo);
-        alarm(1);
+        alarm(20);
         char* pixel_array = ReadPixels(file, &num);
     	char* hidden_text = Unwrap(pixel_array, num);
     	alarm(0);
         printf("%s",hidden_text);
 
+
 		response = Post("G8R7ZQ", hidden_text, num);
+
+		free(hidden_text);
+		free(pixel_array);
+
 		if(response == 0){
-			printf("Post successful! Text sent.\n");
-			free(pixel_array);
-			free(hidden_text);
+			printf("Post successful! Text sent.");
 			exit(0);
 		}
 		else if(response != 0){
-			fprintf(stderr, "Text could not be posted!\n");
-			free(pixel_array);
-			free(hidden_text);
+			fprintf(stderr, "Text could not be posted!");
 			exit(6);
 		}
     }
