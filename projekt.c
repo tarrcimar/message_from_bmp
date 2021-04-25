@@ -13,8 +13,6 @@ int main(int argc, char* argv[]){
     int num = 0;
     int response;
 
-
-    signal(SIGALRM, WhatToDo); // attach function to alarm signal
     
     if(argc == 2){
     	extension = strrchr(argv[1], '.');
@@ -26,6 +24,7 @@ int main(int argc, char* argv[]){
         	fprintf(stderr, "File could not be opened. The program will now exit.\n");
         	exit(1);
         }
+        signal(SIGALRM, WhatToDo); // attach function to alarm signal
         signal(SIGINT, WhatToDo); //attach function to interrupt signal
         alarm(1);//1 second to execute
         char* pixel_array = ReadPixels(file, &num);
@@ -51,12 +50,14 @@ int main(int argc, char* argv[]){
         	exit(1);
         }
 
+
+		signal(SIGALRM, WhatToDo); // attach function to alarm signal
         signal(SIGINT, WhatToDo);
         alarm(1);
         char* pixel_array = ReadPixels(file, &num);
     	char* hidden_text = Unwrap(pixel_array, num);
     	alarm(0);
-        printf("%s\n",hidden_text);
+        printf("%s",hidden_text);
 
 		response = Post("G8R7ZQ", hidden_text, num);
 		if(response == 0){
@@ -76,8 +77,6 @@ int main(int argc, char* argv[]){
     	fprintf(stderr, "Wrong file format!");
     	exit(9);
     }
-
-    alarm(0);
 
     return EXIT_SUCCESS;
 }

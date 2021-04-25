@@ -34,7 +34,8 @@ char* Unwrap(char *Pbuff, int NumCh){
     	exit(3);
     }
 
-    char *letters = malloc((NumCh) * sizeof(char));
+    char *letters = malloc((NumCh + 1) * sizeof(char));
+    char *finalletters = malloc(NumCh * sizeof(char));
 
     //Check for Failure
     if(letters == NULL){
@@ -51,20 +52,29 @@ char* Unwrap(char *Pbuff, int NumCh){
     //Decode the rgb elements from the array
     //on all available threads
     #pragma omp parallel for shared(Pbuff) private(i)
-		for (i = 0; i < (NumCh) * 3;i+=3) 
+		for (i = 0; i < (NumCh * 3);i+=3) 
 		{
 			character = ((Pbuff[i] & mask)<<6) | ((Pbuff[i+1] & mask)<<3) | ((Pbuff[i + 2] & mask));
 			letters[i/3] = character;
 		}
+
+
+	//Double check the length
+
+	for(int i = 0; i < NumCh; i++){
+		finalletters[i] = letters[i];
+	}
+
+	
     
-    return letters;
+    return finalletters;
 }
 
 char* ReadPixels(int fd, int* numCh)
 {
     char info[54]; //length of header(14) + InfoHeader(40) in bytes
 
-    //sleep(2); testing catching interrupt signal
+    //sleep(2); //testing catching interrupt signal
     
     read(fd, info, 54*sizeof(char));
 
