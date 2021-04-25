@@ -77,7 +77,7 @@ char* ReadPixels(int fd, int* numCh)
 {
     char info[54]; //length of header(14) + InfoHeader(40) in bytes
 
-    sleep(2); //testing catching interrupt signal
+    //sleep(2); //testing catching interrupt signal
     
     read(fd, info, 54*sizeof(char));
 

@@ -27,7 +27,7 @@ int main(int argc, char* argv[]){
         }
         signal(SIGALRM, WhatToDo); // attach function to alarm signal
         signal(SIGINT, WhatToDo); //attach function to interrupt signal
-        alarm(20);//1 second to execute
+        alarm(1);//1 second to execute
         char* pixel_array = ReadPixels(file, &num);
     	char* hidden_text = Unwrap(pixel_array, num);
     	alarm(0);
@@ -68,7 +68,7 @@ int main(int argc, char* argv[]){
 
 		signal(SIGALRM, WhatToDo); // attach function to alarm signal
         signal(SIGINT, WhatToDo);
-        alarm(20);
+        alarm(1);
         char* pixel_array = ReadPixels(file, &num);
     	char* hidden_text = Unwrap(pixel_array, num);
     	alarm(0);
