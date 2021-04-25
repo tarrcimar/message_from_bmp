@@ -123,7 +123,7 @@ int BrowseForOpen(){
 			stat((*entry).d_name, &inode);
 			switch(inode.st_mode & S_IFMT){
 				case S_IFDIR:
-					printf("%s%s%s\t",BHGRN, (*entry).d_name, WHT);
+					printf("%s%s%s\t",BHWHT, (*entry).d_name, WHT);
 					break;
 				case S_IFREG:
 					printf("%s%s%s \t",UCYN,(*entry).d_name, WHT);
@@ -154,7 +154,7 @@ int BrowseForOpen(){
 				stat(tmp, &path_stat);
 				//If not a directory, check if it's a regular file, if yes then open and return
     			if(S_ISREG(path_stat.st_mode) == 1){
-    				if(strcmp(extension, "bmp") == 0){
+    				if(strcmp(extension + 1, "bmp") == 0){
     					regularfile = open(tmp, O_RDONLY);
 						return regularfile;	
     				}

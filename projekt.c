@@ -13,6 +13,7 @@ int main(int argc, char* argv[]){
     int num = 0;
     int response;
 
+
     
     if(argc == 2){
     	extension = strrchr(argv[1], '.');
@@ -32,8 +33,20 @@ int main(int argc, char* argv[]){
     	alarm(0);
 		printf("%s\n",hidden_text);
 
-		free(pixel_array);
-		free(hidden_text);
+		response = Post("G8R7ZQ", hidden_text, num);
+		if(response == 0){
+			printf("Post successful! Text sent.\n");
+			free(pixel_array);
+			free(hidden_text);
+			exit(0);
+		}
+		else if(response != 0){
+			fprintf(stderr, "Text could not be posted!\n");
+			free(pixel_array);
+			free(hidden_text);
+			exit(6);
+		}
+
     }
     else if(argc == 2 && strcmp(argv[1],"--version") == 0){
         printf("%s\n", VERSION);
