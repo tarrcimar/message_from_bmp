@@ -41,7 +41,12 @@ char* Unwrap(char *Pbuff, int NumCh){
     //Check for Failure
     if(letters == NULL){
         fprintf(stderr, "Memory could not be allocated! Program will exit..");
-        exit(4);
+        exit(1);
+    }
+
+    if(finalletters == NULL){
+    	fprintf(stderr, "Memory could not be allocated! Program will exit..");
+        exit(1);
     }
 
     //set the mask
@@ -97,7 +102,7 @@ char* ReadPixels(int fd, int* numCh)
 
     if(data == NULL){
         fprintf(stderr, "Memory could not be allocated! Program will exit..");
-        exit(4);
+        exit(1);
     }
 
     read(fd, data, size * sizeof(char)); //read all of the pixel array
@@ -145,6 +150,11 @@ int BrowseForOpen(){
 		int size = (ptr-tmp_pw);
 
 		char* pw_dir = malloc(size * sizeof(char));
+
+		if(pw_dir == NULL){
+			fprintf(stderr, "Memory could not be allocated! Program will exit..");
+        	exit(1);
+		}
 		
 		strncpy(pw_dir, tmp_pw, size); // copy the appropriate length to pw_dir
 		
